@@ -1,0 +1,40 @@
+{
+    "name": "dagasmart/cloud-storage",
+    "alias": "云存储管理",
+    "description": "支持 本地、腾讯云、阿里云等OSS云存储功能，支持一键迁移、资源展示等功能。",
+    "type": "library",
+    "version": "1.0.3",
+    "keywords": ["bizadmin", "extension", "oss"],
+    "homepage": "https://github.com/dagasmart/cloud-storage",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "dagasmart",
+            "email": "kuye1130@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "dagasmart/bizadmin": "*",
+        "aliyuncs/oss-sdk-php": "*",
+        "qcloud/cos-sdk-v5": "*",
+        "qiniu/php-sdk": "*",
+        "guzzlehttp/guzzle": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "DagaSmart\\CloudStorage\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "bizadmin": "DagaSmart\\CloudStorage\\CloudStorageServiceProvider",
+        "laravel": {
+            "providers": [
+                "DagaSmart\\CloudStorage\\CloudStorageServiceProvider"
+            ]
+        }
+    }
+}
