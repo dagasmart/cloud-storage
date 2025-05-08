@@ -50,7 +50,8 @@ class CloudResourceController extends BaseController
     /**
      * 页面css
      *
-     * @return array[]
+     * @param string $type
+     * @return array
      */
     private function pageCss(string $type = 'page'): array
     {
@@ -229,6 +230,7 @@ class CloudResourceController extends BaseController
                     'fontSize' => '8px',
                 ],
             ],
+            'color' => ['#1db87b','#fccc5a','#8095ff','#8450ea', '#e6e6e6'],
             'series' => [
                 [
                     'type' => 'pie',
@@ -258,7 +260,7 @@ class CloudResourceController extends BaseController
      */
     public function view(): Page
     {
-        return amis()->Page()->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
+        return amis()->Page()->className('shadow-xl rounded-md overflow-hidden')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
             amis()->Flex()->className('bg-white')->items([
                 amis()->Page()->id('tabs-list')->className('card-group-page-left w-12')->body([
                     amis()->VanillaAction()->visibleOn('${showType == "grid"}')->icon('fa fa-list')->tooltip(cloud_storage_trans('list'))->tooltipPlacement('top')->onEvent(['click' => ['actions' => [
@@ -296,6 +298,10 @@ class CloudResourceController extends BaseController
                                     ->joinValues(false)
                                     ->maxLength(env('CLOUD_STORAGE_FILE_MAX_LENGTH', 10))
 //                                    ->maxSize($this->service->getSize())
+                                    ->className([
+                                        'red' => 'data.progress > 80',
+                                        'blue' => 'data.progress > 60',
+                                    ])
                                     ->autoUpload(false)
                                     ->receiver($this->getUploadReceiverPath().'/${storage_id}')
                                     ->startChunkApi($this->getUploadStartChunkPath().'/${storage_id}')
@@ -398,7 +404,7 @@ class CloudResourceController extends BaseController
                 amis()->Page()->css($this->pageCss('card'))->body(
                     amis()->Card()->className('card-list')->body([
                         amis()->Image()->visibleOn('${is_type == "other"}')->src($this->service->getIcon('/image/file-type/other.png')),
-                        amis()->Image()->visibleOn('${is_type == "image"}')->name('url.value')->thumbRatio('16:9')->enlargeAble(true),
+                        amis()->Image()->visibleOn('${is_type == "image"}')->name('url.value')->thumbRatio('1:1')->enlargeAble(true),
                         amis()->Image()->visibleOn('${is_type == "document"}')->src($this->service->getIcon('/image/file-type/document.png'))->onEvent(['click' => ['actions' => [
                             [
                                 'actionType' => 'dialog', 'dialog' => [
