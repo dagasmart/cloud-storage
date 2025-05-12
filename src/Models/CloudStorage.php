@@ -9,6 +9,8 @@ class CloudStorage extends Base
 {
     protected $table = 'basic_cloud_storage';
 
+    protected $primaryKey = 'id';
+
     public function config(): Attribute
     {
         return Attribute::make(
