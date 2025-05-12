@@ -3,6 +3,7 @@
 namespace DagaSmart\CloudStorage\Http\Controllers;
 
 use DagaSmart\BizAdmin\Controllers\AdminController;
+use DagaSmart\CloudStorage\Models\CloudResource;
 use DagaSmart\CloudStorage\Traits;
 use Dagasmart\BizAdmin\Renderers\Form;
 use Illuminate\Support\Facades\DB;
@@ -28,11 +29,16 @@ class BaseController extends AdminController
         //执行事务
         return DB::transaction(function () use ($ids) {
             //查询图片集合
-            $images = $this->service->query()
+            $resourceModel = new CloudResource;
+            $pluck = $resourceModel->query()
                 ->whereIn('id', explode(',', $ids))
-                ->pluck('url')
+                ->pluck('url','id')
                 ->toArray();
-            if ($images) {
+            if ($oids = array_keys($pluck)) {
+                //删除资源表记录
+                $resourceModel->query()->whereIn('id',$oids)->forceDelete();
+            }
+            if ($images = array_values($pluck)) {
                 //执行删除图片操作
                 Storage::disk('public')->delete($images);
             }
