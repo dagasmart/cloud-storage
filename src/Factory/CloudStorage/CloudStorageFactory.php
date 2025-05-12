@@ -2,7 +2,6 @@
 
 namespace DagaSmart\CloudStorage\Factory\CloudStorage;
 
-use Exception;
 
 class CloudStorageFactory implements BaseFactory
 {
@@ -10,7 +9,7 @@ class CloudStorageFactory implements BaseFactory
     {
         $className = __NAMESPACE__.'\\'.ucfirst(strtolower(($config->driver))).'\\'.'Client';
         if (! class_exists($className)) {
-            throw new Exception('类不存在');
+            admin_abort('类不存在');
         }
 
         return new $className($config->config);

@@ -9,6 +9,8 @@ class CloudStorage extends Base
 {
     protected $table = 'basic_cloud_storage';
 
+    protected $primaryKey = 'id';
+
     public function config(): Attribute
     {
         return Attribute::make(
@@ -72,7 +74,7 @@ class CloudStorage extends Base
     {
         $data = Cache::get(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
 
-        return ! empty($data) ? json_decode($data, true) : [];
+        return $data ? json_decode($data, true) : [];
     }
 
     public function clearCache(): void

@@ -3,6 +3,9 @@
 namespace DagaSmart\CloudStorage\Http\Controllers;
 
 use DagaSmart\CloudStorage\Services\CloudUploadService;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CloudUploadController extends BaseController
 {
@@ -14,13 +17,13 @@ class CloudUploadController extends BaseController
         $this->uploadService = new CloudUploadService;
     }
 
-    public function receiver($id): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\JsonResource
+    public function receiver($id): JsonResponse|JsonResource
     {
         try {
             $data = $this->uploadService->receiver($id);
 
             return $this->response()->success($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->response()->fail($e->getMessage());
         }
     }
@@ -28,13 +31,13 @@ class CloudUploadController extends BaseController
     /**
      * 开始上传文件的准备
      */
-    public function startChunk($id): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\JsonResource
+    public function startChunk($id): JsonResponse|JsonResource
     {
         try {
             $data = $this->uploadService->startChunk($id);
 
             return $this->response()->success($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             //抛出错误信息
             return $this->response()->fail($e->getMessage());
         }
@@ -43,13 +46,13 @@ class CloudUploadController extends BaseController
     /**
      * 分段上传文件
      */
-    public function chunk($id): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\JsonResource
+    public function chunk($id): JsonResponse|JsonResource
     {
         try {
             $data = $this->uploadService->chunk($id);
 
             return $this->response()->success($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->response()->fail($e->getMessage());
         }
     }
@@ -57,14 +60,14 @@ class CloudUploadController extends BaseController
     /**
      * 完成分片上传
      */
-    public function finishChunk($id): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\JsonResource
+    public function finishChunk($id): JsonResponse|JsonResource
     {
         try {
             //接取视频
             $data = $this->uploadService->finishChunk($id);
 
             return $this->response()->success($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->response()->fail($e->getMessage());
         }
     }

@@ -38,8 +38,7 @@ class CloudStorageServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (Extension::tableExists()) {
-            $this->autoRegister();
-            $this->init();
+            parent::boot();
         }
     }
 }
