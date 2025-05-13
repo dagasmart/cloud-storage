@@ -31,19 +31,19 @@ class BaseController extends AdminController
             //查询图片集合
             $resourceModel = new CloudResource;
             $pluck = $resourceModel->query()
-                ->whereIn('id', explode(',', $ids))
+                ->whereIn('storage_id', explode(',', $ids))
                 ->pluck('url','id')
                 ->toArray();
-            if ($oids = array_keys($pluck)) {
+            if ($storageIds = array_keys($pluck)) {
                 //删除资源表记录
-                $resourceModel->query()->whereIn('id',$oids)->forceDelete();
+                if ($resourceModel::destroy($storageIds) && $images = array_values($pluck)) {
+                    //执行删除图片操作
+                    if (Storage::disk('public')->delete($images)) {
+                        // 执行模型的删除操作
+                        return parent::destroy($ids);
+                    }
+                }
             }
-            if ($images = array_values($pluck)) {
-                //执行删除图片操作
-                Storage::disk('public')->delete($images);
-            }
-            // 执行模型的删除操作
-            return parent::destroy($ids);
         });
     }
 }

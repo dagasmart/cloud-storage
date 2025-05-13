@@ -369,6 +369,7 @@ class CloudResourceController extends BaseController
             ->bulkActions([$this->bulkDeleteButton()])
             ->perPageAvailable([10, 20, 30, 50, 100, 200])
             ->footerToolbar(['switch-per-page', 'statistics', 'pagination'])
+            ->autoFillHeight(true)
             ->columns([
                 amis()->TableColumn('title', cloud_storage_trans('title')),
                 amis()->TableColumn('extension', '后缀'),
