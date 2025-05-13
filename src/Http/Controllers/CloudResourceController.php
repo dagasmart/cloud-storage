@@ -61,7 +61,23 @@ class CloudResourceController extends BaseController
                 $data = [
                     '.nav-type > .cxd-Nav-Menu-submenu-title > .cxd-Nav-Menu-item-wrap > .cxd-Nav-Menu-item-link .nav-icon-img > .cxd-Nav-Menu-item-wrap > .cxd-Nav-Menu-item-link' => [
                         'display' => 'flex',
-                        'align-items' => 'center',
+                        'align-items' => 'left',
+                    ],
+                    '.nav-type .cxd-Nav-Menu-item' => [
+                        'margin' => '5px',
+                        'border-radius' => '8px',
+                        'border' => '1px solid transparent',
+                    ],
+                    '.nav-type .cxd-Nav-Menu-item-selected' => [
+                        'border-radius' => '8px',
+                        'background-color' => 'var(--colors-brand-10)',
+                        'border' => '1px dashed',
+                        'border-left' => '1px solid',
+                        'box-shadow' => '1px 1px 2px 1px #0001',
+                        'overflow' => 'hidden',
+                    ],
+                    '.nav-type .cxd-Nav-Menu-item-selected:before' => [
+                        'border-right' => '2px solid',
                     ],
                     '.nav-type > .cxd-Nav-Menu > .cxd-Nav-Menu-item-tooltip-wrap > .cxd-Nav-Menu-item > .cxd-Nav-Menu-item-wrap > .cxd-Nav-Menu-item-link' => [
                         'display' => 'flex',
