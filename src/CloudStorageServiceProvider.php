@@ -4,10 +4,6 @@ namespace DagaSmart\CloudStorage;
 
 use DagaSmart\BizAdmin\Extend\Extension;
 use Dagasmart\BizAdmin\Extend\ServiceProvider;
-use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionException;
 
 class CloudStorageServiceProvider extends ServiceProvider
 {
@@ -39,19 +35,10 @@ class CloudStorageServiceProvider extends ServiceProvider
         return null;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     */
     public function boot(): void
     {
         if (Extension::tableExists()) {
-            $this->runMigrations();
-            $this->autoRegister();
-            $this->init();
+            parent::boot();
         }
-        parent::boot();
     }
 }
