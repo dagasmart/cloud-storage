@@ -19,7 +19,7 @@ class BaseController extends AdminController
     }
 
     /**
-     * 批量删除图片
+     * 批量删除
      * Method DELETE
      * @param $ids
      * @return mixed
@@ -28,10 +28,22 @@ class BaseController extends AdminController
     {
         //执行事务
         return DB::transaction(function () use ($ids) {
+
+            $getMorphClass = $this->service->getModel()->getMorphClass();
+
+            //判断是否资源模型类
+            if (str_contains($getMorphClass, 'CloudResource')) {
+                $resourceModel = new $getMorphClass;
+                $column = 'id';
+                $flag = false;
+            } else { //否则，加载资源模型类
+                $resourceModel = new CloudResource;
+                $column = 'storage_id';
+                $flag = true;
+            }
             //查询图片集合
-            $resourceModel = new CloudResource;
             $pluck = $resourceModel->query()
-                ->whereIn('storage_id', explode(',', $ids))
+                ->whereIn($column, explode(',', $ids))
                 ->pluck('url','id')
                 ->toArray();
             if ($storageIds = array_keys($pluck)) {
@@ -40,10 +52,12 @@ class BaseController extends AdminController
                     //执行删除图片操作
                     if (Storage::disk('public')->delete($images)) {
                         // 执行模型的删除操作
-                        return parent::destroy($ids);
+                        if ($flag) return parent::destroy($ids);
+                        return true;
                     }
                 }
             }
+            return false;
         });
     }
 }
