@@ -75,13 +75,13 @@ class CloudStorageController extends BaseController
         return $this->baseForm()->body([
 
             amis()->HiddenControl('id', 'ID'),
-            amis()->TextControl('title', cloud_storage_trans('title'))->required(),
+            amis()->TextControl('title', cloud_storage_trans('title'))->placeholder('local')->clearable()->required(),
             amis()->SelectControl('driver', cloud_storage_trans('driver'))->disabled($isEdit)->options(
                 cloud_storage_trans('driver_select')
             )->value('local')->required(),
             // 本地
             amis()->Container()->hiddenOn('${driver!="local"}')->body([
-                amis()->TextControl('config.domain', cloud_storage_trans('domain'))->required(),
+                amis()->TextControl('config.domain', cloud_storage_trans('domain'))->placeholder(config('app.url'))->required(),
                 amis()->TextControl('config.root', cloud_storage_trans('root'))->desc(cloud_storage_trans('root_desc'))->required(),
             ]),
             // OSS 阿里云对象存储
@@ -108,11 +108,15 @@ class CloudStorageController extends BaseController
             //                amis()->TextControl('config.domain',  cloud_storage_trans('domain')),
             //            ]),
             amis()->Page()->className(['m-3']),
-            amis()->NumberControl('file_size', cloud_storage_trans('file_size'))->min(0)
+            amis()->NumberControl('file_size', cloud_storage_trans('file_size'))
+                ->max(1000)
+                ->min(0)
+                ->value(10)
+                ->size('sm')
                 ->desc(cloud_storage_trans('file_size_desc')),
             amis()->TextareaControl('accept', cloud_storage_trans('accept'))->desc(cloud_storage_trans('accept_desc')),
-            amis()->TextareaControl('description', cloud_storage_trans('description')),
-            amis()->TextControl('sort', cloud_storage_trans('sort'))->value(1000),
+            amis()->TextareaControl('description', cloud_storage_trans('description'))->placeholder(cloud_storage_trans('description_placeholder')),
+            amis()->NumberControl('sort', cloud_storage_trans('sort'))->size('sm')->value(1000),
             amis()->SwitchControl('is_default', cloud_storage_trans('is_default'))->value(0),
             amis()->SwitchControl('enabled', cloud_storage_trans('status'))->value(0),
         ])->onEvent([
