@@ -25,14 +25,19 @@ class CloudStorage extends Base
     public static function boot(): void
     {
         parent::boot();
+
         static::creating(function ($model) {
             if (admin_user()) {
                 $model->created_user = admin_user()->id;
             } else {
                 $model->created_user = 0;
             }
+        });
+
+        static::created(function ($model) {
             $model->setCache($model);
         });
+
         static::updating(function ($model) {
             if (admin_user()) {
                 $model->updated_user = admin_user()->id;
@@ -41,6 +46,7 @@ class CloudStorage extends Base
             }
             $model->setCache($model);
         });
+
         static::deleting(function ($model) {
             if (admin_user()) {
                 $model->deleted_user = admin_user()->id;

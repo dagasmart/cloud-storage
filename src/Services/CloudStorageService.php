@@ -20,6 +20,26 @@ class CloudStorageService extends AdminService
     public function saving(&$data, $primaryKey = ''): void
     {
         if (filled($data)) {
+            $id = $data['id'] ?? null;
+
+            if (isset($data['title'])) {
+
+                $title = $data['title'] ?? null;
+                admin_abort_if(!$title, '名称不能为空');
+
+                $data = clear_array_trim($data); //消除空格
+
+                //判断名称已存在
+                $is_exists = $this->query()
+                    ->where(['title' => $title])
+                    ->when($id, function ($query) use (&$id) {
+                        return $query->where('id', '!=', $id);
+                    })
+                    ->exists();
+                admin_abort_if($is_exists, '名称已存在，请换个试试');
+            }
+
+
             $data['description'] = $data['description'] ?? '';
             $data['extension'] = $data['extension'] ?? '';
         }
@@ -34,7 +54,7 @@ class CloudStorageService extends AdminService
 
     public function getStorageOptions(): array
     {
-        $data = $this->query()->where('enabled', 1)->get(['id', 'title'])->toArray();
+        $data = $this->query()->where(['enabled' => 1])->get(['id', 'title'])->toArray();
         $res = [];
         foreach ($data as $datum) {
             $res[] = ['label' => $datum['title'], 'value' => $datum['id']];
