@@ -41,20 +41,29 @@ class BaseController extends AdminController
                 $column = 'storage_id';
                 $flag = true;
             }
-            //查询图片集合
-            $pluck = $resourceModel->query()
-                ->whereIn($column, explode(',', $ids))
-                ->pluck('url','id')
-                ->toArray();
-            if ($storageIds = array_keys($pluck)) {
-                //删除资源表记录
-                if ($resourceModel::destroy($storageIds) && $images = array_values($pluck)) {
-                    //执行删除图片操作
-                    if (Storage::disk('public')->delete($images)) {
-                        // 执行模型的删除操作
-                        if ($flag) return parent::destroy($ids);
+
+            if ($flag) {
+                // 执行模型的删除操作
+                parent::destroy($ids);
+
+                //查询图片集合
+                $pluck = $resourceModel->query()
+                    ->whereIn($column, explode(',', $ids))
+                    ->pluck('url','id')
+                    ->toArray();
+                if ($pluck && $storageIds = array_keys($pluck)) {
+
+                    //删除资源表记录
+                    $resourceModel::destroy($storageIds);
+
+                    if ($images = array_values($pluck)) {
+                        //执行删除图片操作
+                        Storage::disk('public')->delete($images);
+                    } else {
                         return true;
                     }
+                } else {
+                    return true;
                 }
             }
             return false;
