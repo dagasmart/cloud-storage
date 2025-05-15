@@ -115,3 +115,22 @@ if (! function_exists('getFilenameAndExtension')) {
         ];
     }
 }
+
+if (! function_exists('clear_array_trim')) {
+    /**
+     * 移除所有类型的空白字符（包括空格、制表符、换行符等）
+     * @param $data
+     * @return array|string
+     */
+    function clear_array_trim($data): array|string
+    {
+        //为数组时
+        if (is_array($data) && count($data) > 0) {
+            $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $json = preg_replace('/\s+/', '', $json);
+            return json_decode($json, true);
+        }
+        //为字符串时
+        return preg_replace('/\s+/', '', $data);
+    }
+}

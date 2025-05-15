@@ -24,7 +24,7 @@ class CloudStorageService extends AdminService
 
             if (isset($data['title'])) {
 
-                $title = $data['title'] ?? null;
+                $title = $data['title'] ?: null;
                 admin_abort_if(!$title, '名称不能为空');
 
                 $data = clear_array_trim($data); //消除空格
