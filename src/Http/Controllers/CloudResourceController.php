@@ -227,7 +227,7 @@ class CloudResourceController extends BaseController
      */
     private function chart(): Chart
     {
-        return amis()->Chart()->className('chart-box')->height('160px')->config([
+        return amis()->Chart()->className('chart-box')->height('200px')->config([
             'grid' => [
                 'left' => 0,
                 'right' => 0,

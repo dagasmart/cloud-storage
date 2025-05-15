@@ -16,11 +16,7 @@ class CloudUploadService
     public function config($id = null): object
     {
         $cloudStorage = new CloudStorage;
-        if ($id) {
-            $data = $cloudStorage->query()->where(['id' => $id])->first();
-        } else {
-            $data = $cloudStorage->getCache();
-        }
+        $data = $cloudStorage->getCache();
         if (!$data) {
             admin_abort(cloud_storage_trans('no_default_storage_settings'));
         }

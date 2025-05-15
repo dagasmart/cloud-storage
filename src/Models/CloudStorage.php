@@ -3,7 +3,10 @@
 namespace DagaSmart\CloudStorage\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use function MongoDB\BSON\toJSON;
+use function PHPUnit\Framework\isJson;
 
 class CloudStorage extends Base
 {
@@ -76,15 +79,23 @@ class CloudStorage extends Base
         return false;
     }
 
-    public function getCache(): array
+    public function getCache(): array|null
     {
-        $data = Cache::get(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
-
-        return $data ? json_decode($data, true) : [];
+        //永久缓存
+        $data = Cache::rememberForever(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, function () {
+            return Cache::lock(self::CACHE_CLOUD_STORAGE_CONFIG_NAME . '_lock', 10)->block(5, function () {
+                return $this->query()
+                    ->where(['is_default' => self::ENABLE])
+                    ->first();
+            });
+        });
+        return isJson($data) ? json_decode($data, true) : null;
     }
 
     public function clearCache(): void
     {
         Cache::forget(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
     }
+
+
 }
