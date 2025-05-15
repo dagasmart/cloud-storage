@@ -276,7 +276,7 @@ class CloudResourceController extends BaseController
      */
     public function view(): Page
     {
-        return amis()->Page()->className('shadow-xl rounded-md overflow-hidden')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
+        return amis()->Page()->className('shadow-md rounded-md overflow-hidden')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
             amis()->Flex()->className('bg-white')->items([
                 amis()->Page()->id('tabs-list')->className('card-group-page-left w-12')->body([
                     amis()->VanillaAction()->visibleOn('${showType == "grid"}')->icon('fa fa-list')->tooltip(cloud_storage_trans('list'))->tooltipPlacement('top')->onEvent(['click' => ['actions' => [
