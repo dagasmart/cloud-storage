@@ -389,13 +389,54 @@ class CloudResourceController extends BaseController
             ->columns([
                 amis()->TableColumn('title', cloud_storage_trans('title')),
                 amis()->TableColumn('extension', '后缀'),
+                amis()->TableColumn('extension', '后缀'),
                 amis()->TableColumn('size', cloud_storage_trans('file_size')),
                 amis()->TableColumn('is_type', cloud_storage_trans('is_type'))->type('mapping')->map([
-                    'image' => "<span class='label label-info'>图片</span>",
-                    'document' => "<span class='label label-success'>文档</span>",
-                    'video' => "<span class='label label-danger'>视频</span>",
-                    'audio' => "<span class='label label-warning'>音频</span>",
-                    'other' => "<span class='label label-default'>其他</span>",
+                    'image' => amis()->Button()->label('图片')->className('shadow')->size('xs')
+                                ->style([
+                                    'background-color' => '#1db87b10',
+                                    'border' => '1px solid #1db87b',
+                                    'color' => '#1db87b',
+                                    'font-size' => '12px',
+                                    'border-radius' => '1rem',
+                                    'padding' => '0 .5rem',
+                                ]),
+                    'document' => amis()->Button()->label('文档')->size('xs')
+                                ->style([
+                                    'background-color' => '#fccc5a10',
+                                    'border' => '1px solid #fccc5a',
+                                    'color' => '#fccc5a',
+                                    'font-size' => '12px',
+                                    'border-radius' => '1rem',
+                                    'padding' => '0 .5rem',
+                                ]),
+                    'video' => amis()->Button()->label('视频')->size('xs')
+                                ->style([
+                                    'background-color' => '#8095ff10',
+                                    'border' => '1px solid #8095ff',
+                                    'color' => '#8095ff',
+                                    'font-size' => '12px',
+                                    'border-radius' => '1rem',
+                                    'padding' => '0 .5rem',
+                                ]),
+                    'audio' => amis()->Button()->label('音频')->size('xs')
+                        ->style([
+                            'background-color' => '#8450ea10',
+                            'border' => '1px solid #8450ea',
+                            'color' => '#8450ea',
+                            'font-size' => '12px',
+                            'border-radius' => '1rem',
+                            'padding' => '0 .5rem',
+                        ]),
+                    'other' => amis()->Button()->label('其他')->size('xs')
+                        ->style([
+                            'background-color' => '#e6e6e610',
+                            'border' => '1px solid #e6e6e6',
+                            'color' => '#e6e6e6',
+                            'font-size' => '12px',
+                            'border-radius' => '1rem',
+                            'padding' => '0 .5rem',
+                        ]),
                 ]),
                 amis()->TableColumn('created_at', admin_trans('admin.created_at'))->type('datetime')->sortable(),
                 $this->rowActions([
