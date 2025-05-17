@@ -307,6 +307,14 @@ class CloudResourceController extends BaseController
                             'body' => [
                                 amis()->SelectControl('storage_id', '存储设置')->selectFirst()
                                     ->options(CloudStorageService::make()->getStorageOptions())->required(),
+                                amis()->Button()
+                                    ->label('去设置存储')
+                                    ->icon('add')
+                                    ->level('link')
+                                    ->block()
+                                    ->actionType('link')
+                                    ->link('cloud_storage/storage')
+                                    ->visibleOn('${storage_id == null}'),
                                 amis()->FileControl('file')->labelWidth('0px')
                                     ->btnLabel(cloud_storage_trans('upload'))
                                     ->accept($this->service->getAccept())

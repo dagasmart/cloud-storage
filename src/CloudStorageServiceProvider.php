@@ -41,4 +41,9 @@ class CloudStorageServiceProvider extends ServiceProvider
             parent::boot();
         }
     }
+
+    public function register(): void
+    {
+        parent::register();
+    }
 }

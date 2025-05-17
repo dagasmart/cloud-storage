@@ -38,7 +38,7 @@ trait CloudStorageQueryPathTrait
 
     public function getResourceListPath(): string
     {
-        return admin_url('get/cloud_storage/resource/getList');
+        return admin_url('cloud_storage/resource/getList');
     }
 
     public function updateResourcePath(): string
