@@ -33,40 +33,46 @@ class BaseController extends AdminController
 
             //判断是否资源模型类
             if (str_contains($getMorphClass, 'CloudResource')) {
-                $resourceModel = new $getMorphClass;
                 $column = 'id';
                 $flag = false;
-            } else { //否则，加载资源模型类
-                $resourceModel = new CloudResource;
+            } else { //否则，加载存储模型类
                 $column = 'storage_id';
                 $flag = true;
             }
 
+            //资源实例化
+            $resourceModel = new CloudResource;
+            //查询图片集合
+            $pluck = $resourceModel->query()
+                ->whereIn($column, explode(',', $ids))
+                ->pluck('url','id');
+
+            //true表示当前为存储模型调用
             if ($flag) {
                 // 执行模型的删除操作
-                parent::destroy($ids);
-
-                //查询图片集合
-                $pluck = $resourceModel->query()
-                    ->whereIn($column, explode(',', $ids))
-                    ->pluck('url','id')
-                    ->toArray();
-                if ($pluck && $storageIds = array_keys($pluck)) {
-
-                    //删除资源表记录
-                    $resourceModel::destroy($storageIds);
-
-                    if ($images = array_values($pluck)) {
+                if (parent::destroy($ids)) {
+                    (new $getMorphClass)->clearCache();
+                    $this->service->getModel();
+                    if (!$pluck->isEmpty()) {
+                        $pluck = $pluck->toArray();
+                        //删除资源表记录
+                        $resourceModel::destroy(array_keys($pluck));
                         //执行删除图片操作
-                        Storage::disk('public')->delete($images);
-                    } else {
-                        return true;
+                        Storage::disk('public')->delete(array_values($pluck));
                     }
-                } else {
-                    return true;
+                    return $this->autoResponse(true, admin_trans('admin.delete'));
+                }
+            } else {
+                if (parent::destroy($ids)) {
+                    if (!$pluck->isEmpty()) {
+                        $pluck = $pluck->toArray();
+                        //执行删除图片操作
+                        Storage::disk('public')->delete(array_values($pluck));
+                    }
+                    return $this->autoResponse(true, admin_trans('admin.delete'));
                 }
             }
-            return false;
+            return $this->autoResponse(false, admin_trans('admin.delete'));
         });
     }
 }

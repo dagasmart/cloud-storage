@@ -276,7 +276,7 @@ class CloudResourceController extends BaseController
      */
     public function view(): Page
     {
-        return amis()->Page()->className('shadow-md rounded-md overflow-hidden')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
+        return amis()->Page()->className('shadow-md rounded-md max-h-full')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
             amis()->Flex()->className('bg-white')->items([
                 amis()->Page()->id('tabs-list')->className('card-group-page-left w-12')->body([
                     amis()->VanillaAction()->visibleOn('${showType == "grid"}')->icon('fa fa-list')->tooltip(cloud_storage_trans('list'))->tooltipPlacement('top')->onEvent(['click' => ['actions' => [
@@ -393,7 +393,8 @@ class CloudResourceController extends BaseController
             ->bulkActions([$this->bulkDeleteButton()])
             ->perPageAvailable([10, 20, 30, 50, 100, 200])
             ->footerToolbar(['switch-per-page', 'statistics', 'pagination'])
-            ->autoFillHeight(true)
+            ->autoFillHeight(false)
+            ->className('min-h-screen')
             ->columns([
                 amis()->TableColumn('title', cloud_storage_trans('title')),
                 amis()->TableColumn('extension', '后缀'),
@@ -463,8 +464,9 @@ class CloudResourceController extends BaseController
             ->filterDefaultVisible(1)
             ->api($this->getResourceListPath())
             ->bulkActions([$this->bulkDeleteButton()])
-            ->set('columnsCount', 8)
+            ->set('columnsCount', 5)
             ->perPageAvailable([40, 80, 120, 160, 200, 240])
+            ->className('min-h-screen')
             ->footerToolbar(['switch-per-page', 'statistics', 'pagination'])
             ->card(
                 amis()->Page()->css($this->pageCss('card'))->body(

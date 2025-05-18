@@ -1,15 +1,8 @@
 <?php
 
-/**
- * @Author: Kevin
- *
- * @Email: 1129759063@qq.com
- *
- * @Date: 2024/5/29:下午2:09
- **/
-
 namespace DagaSmart\CloudStorage\Traits;
 
+use Dagasmart\BizAdmin\Renderers\PickerControl;
 use DagaSmart\CloudStorage\Services\CloudResourceService;
 
 trait UploadPickerTrait
@@ -20,9 +13,11 @@ trait UploadPickerTrait
      * iconify 图标选择器
      *
      *
-     * @return \Dagasmart\BizAdmin\Renderers\PickerControl
+     * @param string $name
+     * @param string $label
+     * @return PickerControl
      */
-    public function uploadPicker(string $name = '', string $label = '')
+    public function uploadPicker(string $name = '', string $label = ''): PickerControl
     {
         $cloudResourceService = new CloudResourceService;
         $schema = amis()->CRUDCards()

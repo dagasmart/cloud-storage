@@ -20,7 +20,6 @@ class CloudUploadService
         if (!$data) {
             admin_abort(cloud_storage_trans('no_default_storage_settings'));
         }
-
         return (object) $data;
     }
 

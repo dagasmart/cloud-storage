@@ -82,7 +82,15 @@ class CloudStorageController extends BaseController
             // 本地
             amis()->Container()->hiddenOn('${driver!="local"}')->body([
                 amis()->TextControl('config.domain', cloud_storage_trans('domain'))->placeholder(config('app.url'))->required(),
-                amis()->TextControl('config.root', cloud_storage_trans('root'))->desc(cloud_storage_trans('root_desc'))->required(),
+                amis()->SelectControl('config.root', cloud_storage_trans('root'))
+                    ->options([
+                        ['label'=>'uploads', 'value'=>'uploads'],
+                        ['label'=>'images', 'value'=>'images'],
+                        ['label'=>'files', 'value'=>'files'],
+                    ])
+                    ->value('uploads')
+                    ->desc(cloud_storage_trans('root_desc'))
+                    ->required(),
             ]),
             // OSS 阿里云对象存储
             amis()->Container()->hiddenOn('${driver!="oss"}')->body([
@@ -117,8 +125,8 @@ class CloudStorageController extends BaseController
             amis()->TextareaControl('accept', cloud_storage_trans('accept'))->desc(cloud_storage_trans('accept_desc')),
             amis()->TextareaControl('description', cloud_storage_trans('description'))->placeholder(cloud_storage_trans('description_placeholder')),
             amis()->NumberControl('sort', cloud_storage_trans('sort'))->size('sm')->value(1000),
-            amis()->SwitchControl('is_default', cloud_storage_trans('is_default'))->value(0),
-            amis()->SwitchControl('enabled', cloud_storage_trans('status'))->value(0),
+            amis()->SwitchControl('is_default', cloud_storage_trans('is_default'))->value(1),
+            amis()->SwitchControl('enabled', cloud_storage_trans('status'))->value(1),
         ])->onEvent([
             'submitSucc' => [
                 'actions' => [

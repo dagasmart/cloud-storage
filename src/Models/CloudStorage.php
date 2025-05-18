@@ -3,10 +3,7 @@
 namespace DagaSmart\CloudStorage\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
-use function MongoDB\BSON\toJSON;
-use function PHPUnit\Framework\isJson;
 
 class CloudStorage extends Base
 {
@@ -73,23 +70,30 @@ class CloudStorage extends Base
                 'is_default' => $model->is_default,
             ];
 
-            return Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, json_encode($data));
+            return Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, $data);
         }
 
         return false;
     }
 
-    public function getCache(): array|null
+    public function getCache()
     {
-        //永久缓存
-        $data = Cache::rememberForever(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, function () {
-            return Cache::lock(self::CACHE_CLOUD_STORAGE_CONFIG_NAME . '_lock', 10)->block(5, function () {
-                return $this->query()
-                    ->where(['is_default' => self::ENABLE])
-                    ->first();
-            });
-        });
-        return isJson($data) ? json_decode($data, true) : null;
+        $data = Cache::get(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
+        if (!$data) {
+            if ($row = $this->query()->where(['is_default' => self::ENABLE])->first()) {
+                $data = [
+                    'id' => $row->id,
+                    'title' => $row->title,
+                    'driver' => $row->driver,
+                    'config' => $row->config,
+                    'file_size' => $row->file_size,
+                    'accept' => $row->accept,
+                    'is_default' => $row->is_default,
+                ];
+                Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, $data);
+            }
+        }
+        return $data;
     }
 
     public function clearCache(): void

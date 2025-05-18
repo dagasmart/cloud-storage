@@ -4,6 +4,7 @@ namespace DagaSmart\CloudStorage;
 
 use DagaSmart\BizAdmin\Extend\Extension;
 use Dagasmart\BizAdmin\Extend\ServiceProvider;
+use DagaSmart\CloudStorage\Services\CloudUploadService;
 
 class CloudStorageServiceProvider extends ServiceProvider
 {
@@ -45,5 +46,7 @@ class CloudStorageServiceProvider extends ServiceProvider
     public function register(): void
     {
         parent::register();
+        $this->app->singleton('admin.cloud.upload', CloudUploadService::class);
     }
+
 }
