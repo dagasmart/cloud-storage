@@ -77,7 +77,8 @@ class CloudResourceController extends BaseController
                         'overflow' => 'hidden',
                     ],
                     '.nav-type .cxd-Nav-Menu-item-selected:before' => [
-                        'border-right' => '2px solid',
+                        'border-right' => '20px solid',
+                        'opacity' => '0.1',
                     ],
                     '.nav-type > .cxd-Nav-Menu > .cxd-Nav-Menu-item-tooltip-wrap > .cxd-Nav-Menu-item > .cxd-Nav-Menu-item-wrap > .cxd-Nav-Menu-item-link' => [
                         'display' => 'flex',
@@ -391,6 +392,10 @@ class CloudResourceController extends BaseController
             ->filterDefaultVisible(1)
             ->api($this->getResourceListPath())
             ->bulkActions([$this->bulkDeleteButton()])
+            ->headerToolbar([
+                'bulkActions',
+                amis('reload')->set('align','right'),
+            ])
             ->perPageAvailable([10, 20, 30, 50, 100, 200])
             ->footerToolbar(['switch-per-page', 'statistics', 'pagination'])
             ->autoFillHeight(false)
@@ -464,6 +469,10 @@ class CloudResourceController extends BaseController
             ->filterDefaultVisible(1)
             ->api($this->getResourceListPath())
             ->bulkActions([$this->bulkDeleteButton()])
+            ->headerToolbar([
+                'bulkActions',
+                amis('reload')->set('align','right'),
+            ])
             ->set('columnsCount', 5)
             ->perPageAvailable([40, 80, 120, 160, 200, 240])
             ->className('min-h-screen')
