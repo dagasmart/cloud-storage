@@ -5,6 +5,7 @@ namespace DagaSmart\CloudStorage;
 use DagaSmart\BizAdmin\Extend\Extension;
 use Dagasmart\BizAdmin\Extend\ServiceProvider;
 use DagaSmart\CloudStorage\Services\CloudUploadService;
+use Exception;
 
 class CloudStorageServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,10 @@ class CloudStorageServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function register(): void
     {
         parent::register();
