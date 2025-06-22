@@ -77,7 +77,8 @@ class CloudResourceController extends BaseController
                         'overflow' => 'hidden',
                     ],
                     '.nav-type .cxd-Nav-Menu-item-selected:before' => [
-                        'border-right' => '2px solid',
+                        'border-right' => '20px solid',
+                        'opacity' => '0.1',
                     ],
                     '.nav-type > .cxd-Nav-Menu > .cxd-Nav-Menu-item-tooltip-wrap > .cxd-Nav-Menu-item > .cxd-Nav-Menu-item-wrap > .cxd-Nav-Menu-item-link' => [
                         'display' => 'flex',
@@ -227,7 +228,7 @@ class CloudResourceController extends BaseController
      */
     private function chart(): Chart
     {
-        return amis()->Chart()->className('chart-box')->height('160px')->config([
+        return amis()->Chart()->className('chart-box')->height('200px')->config([
             'grid' => [
                 'left' => 0,
                 'right' => 0,
@@ -276,7 +277,7 @@ class CloudResourceController extends BaseController
      */
     public function view(): Page
     {
-        return amis()->Page()->className('shadow-xl rounded-md overflow-hidden')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
+        return amis()->Page()->className('shadow-md rounded-md max-h-full')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
             amis()->Flex()->className('bg-white')->items([
                 amis()->Page()->id('tabs-list')->className('card-group-page-left w-12')->body([
                     amis()->VanillaAction()->visibleOn('${showType == "grid"}')->icon('fa fa-list')->tooltip(cloud_storage_trans('list'))->tooltipPlacement('top')->onEvent(['click' => ['actions' => [
@@ -307,6 +308,14 @@ class CloudResourceController extends BaseController
                             'body' => [
                                 amis()->SelectControl('storage_id', '存储设置')->selectFirst()
                                     ->options(CloudStorageService::make()->getStorageOptions())->required(),
+                                amis()->Button()
+                                    ->label('去设置存储')
+                                    ->icon('add')
+                                    ->level('link')
+                                    ->block()
+                                    ->actionType('link')
+                                    ->link('cloud_storage/storage')
+                                    ->visibleOn('${storage_id == null}'),
                                 amis()->FileControl('file')->labelWidth('0px')
                                     ->btnLabel(cloud_storage_trans('upload'))
                                     ->accept($this->service->getAccept())
@@ -383,19 +392,65 @@ class CloudResourceController extends BaseController
             ->filterDefaultVisible(1)
             ->api($this->getResourceListPath())
             ->bulkActions([$this->bulkDeleteButton()])
+            ->headerToolbar([
+                'bulkActions',
+                amis('reload')->set('align','right'),
+            ])
             ->perPageAvailable([10, 20, 30, 50, 100, 200])
             ->footerToolbar(['switch-per-page', 'statistics', 'pagination'])
-            ->autoFillHeight(true)
+            ->autoFillHeight(false)
+            ->className('min-h-screen')
             ->columns([
                 amis()->TableColumn('title', cloud_storage_trans('title')),
                 amis()->TableColumn('extension', '后缀'),
+                amis()->TableColumn('extension', '后缀'),
                 amis()->TableColumn('size', cloud_storage_trans('file_size')),
                 amis()->TableColumn('is_type', cloud_storage_trans('is_type'))->type('mapping')->map([
-                    'image' => "<span class='label label-info'>图片</span>",
-                    'document' => "<span class='label label-success'>文档</span>",
-                    'video' => "<span class='label label-danger'>视频</span>",
-                    'audio' => "<span class='label label-warning'>音频</span>",
-                    'other' => "<span class='label label-default'>其他</span>",
+                    'image' => amis()->Button()->label('图片')->className('shadow')->size('xs')
+                                ->style([
+                                    'background-color' => '#1db87b10',
+                                    'border' => '1px solid #1db87b',
+                                    'color' => '#1db87b',
+                                    'font-size' => '12px',
+                                    'border-radius' => '1rem',
+                                    'padding' => '0 .5rem',
+                                ]),
+                    'document' => amis()->Button()->label('文档')->size('xs')
+                                ->style([
+                                    'background-color' => '#fccc5a10',
+                                    'border' => '1px solid #fccc5a',
+                                    'color' => '#fccc5a',
+                                    'font-size' => '12px',
+                                    'border-radius' => '1rem',
+                                    'padding' => '0 .5rem',
+                                ]),
+                    'video' => amis()->Button()->label('视频')->size('xs')
+                                ->style([
+                                    'background-color' => '#8095ff10',
+                                    'border' => '1px solid #8095ff',
+                                    'color' => '#8095ff',
+                                    'font-size' => '12px',
+                                    'border-radius' => '1rem',
+                                    'padding' => '0 .5rem',
+                                ]),
+                    'audio' => amis()->Button()->label('音频')->size('xs')
+                        ->style([
+                            'background-color' => '#8450ea10',
+                            'border' => '1px solid #8450ea',
+                            'color' => '#8450ea',
+                            'font-size' => '12px',
+                            'border-radius' => '1rem',
+                            'padding' => '0 .5rem',
+                        ]),
+                    'other' => amis()->Button()->label('其他')->size('xs')
+                        ->style([
+                            'background-color' => '#e6e6e610',
+                            'border' => '1px solid #e6e6e6',
+                            'color' => '#e6e6e6',
+                            'font-size' => '12px',
+                            'border-radius' => '1rem',
+                            'padding' => '0 .5rem',
+                        ]),
                 ]),
                 amis()->TableColumn('created_at', admin_trans('admin.created_at'))->type('datetime')->sortable(),
                 $this->rowActions([
@@ -414,8 +469,13 @@ class CloudResourceController extends BaseController
             ->filterDefaultVisible(1)
             ->api($this->getResourceListPath())
             ->bulkActions([$this->bulkDeleteButton()])
-            ->set('columnsCount', 8)
+            ->headerToolbar([
+                'bulkActions',
+                amis('reload')->set('align','right'),
+            ])
+            ->set('columnsCount', 5)
             ->perPageAvailable([40, 80, 120, 160, 200, 240])
+            ->className('min-h-screen')
             ->footerToolbar(['switch-per-page', 'statistics', 'pagination'])
             ->card(
                 amis()->Page()->css($this->pageCss('card'))->body(

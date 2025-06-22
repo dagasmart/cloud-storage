@@ -16,15 +16,10 @@ class CloudUploadService
     public function config($id = null): object
     {
         $cloudStorage = new CloudStorage;
-        if ($id) {
-            $data = $cloudStorage->query()->where('id',$id)->first();
-        } else {
-            $data = $cloudStorage->getCache();
-        }
+        $data = $cloudStorage->getCache();
         if (!$data) {
             admin_abort(cloud_storage_trans('no_default_storage_settings'));
         }
-
         return (object) $data;
     }
 
@@ -35,7 +30,7 @@ class CloudUploadService
      */
     public function store(array $data, $id = null): void
     {
-        if (! empty($data)) {
+        if ($data) {
             $file_res = getFilenameAndExtension($data['path']);
             $ext = $file_res['extension'];
             $title = $file_res['filename'];
@@ -47,7 +42,7 @@ class CloudUploadService
                 'size' => $data['size'] ?? 0,
                 'url' => $data['path'],
                 'is_type' => array_flip($cloudResourceService::fileType)[$type],
-                'storage_id' => empty($id) ? $cloudResourceService->getStorageId() : $id,
+                'storage_id' => $id ?? $cloudResourceService->getStorageId(),
                 'extension' => $ext,
             ]);
         }
@@ -73,7 +68,7 @@ class CloudUploadService
             $config = $this->config($id);
             $object = $this->generateFileName($fileName, $config->config);
             // 判断是否已存在
-            $is_exits = CloudResourceService::make()->query()->where('url', $object)->exists();
+            $is_exits = CloudResourceService::make()->query()->where(['url' => $object])->exists();
             if ($is_exits) {
                 throw new Exception('文件已存在');
             }
@@ -105,7 +100,7 @@ class CloudUploadService
         $config = $this->config($id);
         $object = $this->generateFileName($fileName, $config->config);
         // 判断是否已存在
-        $is_exits = CloudResourceService::make()->query()->where('url', $object)->exists();
+        $is_exits = CloudResourceService::make()->query()->where(['url' => $object])->exists();
         if ($is_exits) {
             throw new Exception('文件已存在');
         }
@@ -124,14 +119,14 @@ class CloudUploadService
     {
         try {
             $file = request()->file('file');
-            if (! $file) {
+            if (!$file) {
                 throw new Exception(cloud_storage_trans('no_file'));
             }
             // 配置信息
             $config = $this->config($id);
 
             $ext = $file->getClientOriginalExtension();
-            if (! empty($config->accept) && ! str_contains($config->accept, $ext)) {
+            if ($config && $config->accept && !str_contains($config->accept, $ext)) {
                 throw new Exception(sprintf(cloud_storage_trans('upload_accept_error'), $ext));
             }
 
@@ -158,7 +153,7 @@ class CloudUploadService
     {
         try {
             $partList = request()->partList;
-            if (empty($partList)) {
+            if (!$partList) {
                 throw new Exception(cloud_storage_trans('upload_chunk_data_not_exist'));
             }
             // 配置信息
@@ -170,7 +165,7 @@ class CloudUploadService
             // 上传分片。
             $size = $cloudStorageFactory->getSize($object, $uploadId);
             $data = $cloudStorageFactory->finishChunk($object, $uploadId, $partList);
-            $this->store(array_merge($data, ['size' => $size]));
+            $this->store(array_merge($data, ['size' => $size]), $config->id);
 
             // 插入数据库
             return $data;
@@ -204,7 +199,7 @@ class CloudUploadService
      */
     public function generateFileName(string $fileName, $config = []): string
     {
-        if (! empty($config['root'])) {
+        if ($config && $config['root']) {
             return $config['root'].'/'.$fileName;
         }
         //获取文件名

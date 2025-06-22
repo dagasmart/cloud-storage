@@ -75,8 +75,8 @@ class Client
         try {
             // 验证上传ID和分片索引
             // 检查是否已有该上传标识的信息  //$partNumber
-            if (empty($uploadId) || ! is_numeric($partNumber) || $partNumber <= 0) {
-                throw new Exception(cloud_storage_trans('"incorrect_upload_id_or_shard_index"')); // 错误的上传ID或分片索引
+            if (!$uploadId || ! is_numeric($partNumber) || $partNumber <= 0) {
+                throw new Exception(cloud_storage_trans('incorrect_upload_id_or_shard_index')); // 错误的上传ID或分片索引
             }
             // 从请求中获取上传标识、分片索引和分片文件  // $uploadId
             // 例如，保存到 storage/app/uploads/{$uploadId}/{$chunkIndex}
@@ -111,7 +111,7 @@ class Client
     {
         try {
             // 验证上传ID
-            if (empty($uploadId)) {
+            if (!$uploadId) {
                 throw new Exception(cloud_storage_trans('incorrect_upload_id')); // 错误的上传ID
             }
             // 合并分片文件
@@ -150,7 +150,7 @@ class Client
     {
         try {
             $data = app('redis')->lRange($uploadId, 0, -1);
-            if (empty($data)) {
+            if (!$data) {
                 throw new Exception(cloud_storage_trans('fragment_not_found'));
             }
 
@@ -170,7 +170,7 @@ class Client
     {
         $partsInfo = $this->listParts($object, $uploadId);
         $size = 0;
-        if (! empty($partsInfo)) {
+        if ($partsInfo) {
             foreach ($partsInfo as $index => $partInfo) {
                 $json = json_decode($partInfo, true);
                 $size += $json['size'];

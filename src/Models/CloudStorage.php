@@ -25,14 +25,19 @@ class CloudStorage extends Base
     public static function boot(): void
     {
         parent::boot();
+
         static::creating(function ($model) {
             if (admin_user()) {
                 $model->created_user = admin_user()->id;
             } else {
                 $model->created_user = 0;
             }
+        });
+
+        static::created(function ($model) {
             $model->setCache($model);
         });
+
         static::updating(function ($model) {
             if (admin_user()) {
                 $model->updated_user = admin_user()->id;
@@ -41,6 +46,7 @@ class CloudStorage extends Base
             }
             $model->setCache($model);
         });
+
         static::deleting(function ($model) {
             if (admin_user()) {
                 $model->deleted_user = admin_user()->id;
@@ -64,21 +70,36 @@ class CloudStorage extends Base
                 'is_default' => $model->is_default,
             ];
 
-            return Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, json_encode($data));
+            return Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, $data);
         }
 
         return false;
     }
 
-    public function getCache(): array
+    public function getCache()
     {
         $data = Cache::get(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
-
-        return $data ? json_decode($data, true) : [];
+        if (!$data) {
+            if ($row = $this->query()->where(['is_default' => self::ENABLE])->first()) {
+                $data = [
+                    'id' => $row->id,
+                    'title' => $row->title,
+                    'driver' => $row->driver,
+                    'config' => $row->config,
+                    'file_size' => $row->file_size,
+                    'accept' => $row->accept,
+                    'is_default' => $row->is_default,
+                ];
+                Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, $data);
+            }
+        }
+        return $data;
     }
 
     public function clearCache(): void
     {
         Cache::forget(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
     }
+
+
 }

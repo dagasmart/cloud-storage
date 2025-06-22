@@ -4,6 +4,8 @@ namespace DagaSmart\CloudStorage;
 
 use DagaSmart\BizAdmin\Extend\Extension;
 use Dagasmart\BizAdmin\Extend\ServiceProvider;
+use DagaSmart\CloudStorage\Services\CloudUploadService;
+use Exception;
 
 class CloudStorageServiceProvider extends ServiceProvider
 {
@@ -41,4 +43,23 @@ class CloudStorageServiceProvider extends ServiceProvider
             parent::boot();
         }
     }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function register(): void
+    {
+        parent::register();
+
+        /**加载路由**/
+        parent::registerRoutes(__DIR__.'/Http/routes.php');
+        /**加载语言包**/
+        if ($lang = parent::getLangPath()) {
+            $this->loadTranslationsFrom($lang, $this->getCode());
+        }
+
+        $this->app->singleton('admin.cloud.upload', CloudUploadService::class);
+    }
+
 }

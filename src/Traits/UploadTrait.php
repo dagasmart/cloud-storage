@@ -21,7 +21,7 @@ trait UploadTrait
     {
         $info = CloudResource::query()->find($resource_id, ['id', 'url']);
         if ($info) {
-            if (!empty($openDomain)) {
+            if ($openDomain) {
                 return $openDomain . $info->url;
             }
             try {
@@ -44,24 +44,24 @@ trait UploadTrait
      */
     public function cloudSimpleUpload($file_path, $storage_id, $fileName = '', $cover = false)
     {
-        //file exist？
+        //file exist?
         if (!file_exists($file_path)) {
             return null;
         }
-        $storage = CloudStorage::query()->where('enabled', 1)->find($storage_id);
+        $storage = CloudStorage::query()->where(['enabled' => 1])->find($storage_id);
         if ($storage) {
             $service = new CloudUploadService;
             $size = filesize($file_path);
             $config = $storage->config;
-            if (empty($fileName)) {
+            if (!$fileName) {
                 $file_res = getFilenameAndExtension($file_path);
                 $fileName = $file_res['filename'];
-                if (!empty($file_res['extension'])) {
+                if ($file_res['extension']) {
                     $fileName .= '.' . $file_res['extension'];
                 }
             }
             $object = $service->generateFileName($fileName, $config);
-            $exits = CloudResource::query()->where('url', $object)->first();
+            $exits = CloudResource::query()->where(['url' => $object])->first();
             if ($exits && !$cover) {
                 return $exits;
             }
@@ -74,7 +74,7 @@ trait UploadTrait
             // 插入数据库
             $service->store(array_merge($data, ['size' => $size]), $storage_id);
 
-            return CloudResource::query()->where('url', $object)->first();
+            return CloudResource::query()->where(['url' => $object])->first();
         }
 
         return null;
@@ -87,11 +87,11 @@ trait UploadTrait
      */
     public function cloudChunkUpload($file_path, $storage_id, $fileName = '', $chunk_size = 50 * 1024 * 1024, $min_size = 5 * 1024 * 1024 * 1024, $cover = false)
     {
-        //file exist？
+        //file exist?
         if (!file_exists($file_path)) {
             return null;
         }
-        $storage = CloudStorage::query()->where('enabled', 1)->find($storage_id);
+        $storage = CloudStorage::query()->where(['enabled' => 1])->find($storage_id);
         if ($storage) {
             $size = filesize($file_path);
             if ($size < $min_size) {
@@ -99,10 +99,10 @@ trait UploadTrait
             } else {
                 $service = new CloudUploadService;
                 $config = $storage->config;
-                if (empty($fileName)) {
+                if (!$fileName) {
                     $file_res = getFilenameAndExtension($file_path);
                     $fileName = $file_res['filename'];
-                    if (!empty($file_res['extension'])) {
+                    if ($file_res['extension']) {
                         $fileName .= '.' . $file_res['extension'];
                     }
                 }
@@ -146,7 +146,7 @@ trait UploadTrait
                     }
                     $service->store(array_merge($res, ['size' => $size]), $storage_id);
 
-                    return CloudResource::query()->where('url', $object)->first();
+                    return CloudResource::query()->where(['url' => $object])->first();
                 } elseif ($exits) {
                     return $exits;
                 }
