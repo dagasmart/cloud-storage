@@ -5,10 +5,6 @@ return [
     'driver' => '驱动',
     'driver_select' => [
         [
-            'label' => '本地存储',
-            'value' => 'local',
-        ],
-        [
             'label' => '阿里云OSS',
             'value' => 'oss',
         ],

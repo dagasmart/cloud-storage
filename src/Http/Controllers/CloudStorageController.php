@@ -76,9 +76,11 @@ class CloudStorageController extends BaseController
 
             amis()->HiddenControl('id', 'ID'),
             amis()->TextControl('title', cloud_storage_trans('title'))->placeholder('local')->clearable()->required(),
-            amis()->SelectControl('driver', cloud_storage_trans('driver'))->disabled($isEdit)->options(
-                cloud_storage_trans('driver_select')
-            )->value('local')->required(),
+            amis()->SelectControl('driver', cloud_storage_trans('driver'))
+                ->disabled($isEdit)
+                ->options(cloud_storage_trans('driver_select'))
+                ->value(storage_driver_default('driver_select'))
+                ->required(),
             // 本地
             amis()->Container()->hiddenOn('${driver!="local"}')->body([
                 amis()->TextControl('config.domain', cloud_storage_trans('domain'))->placeholder(config('app.url'))->required(),
@@ -124,7 +126,7 @@ class CloudStorageController extends BaseController
                 ->desc(cloud_storage_trans('file_size_desc')),
             amis()->TextareaControl('accept', cloud_storage_trans('accept'))->desc(cloud_storage_trans('accept_desc')),
             amis()->TextareaControl('description', cloud_storage_trans('description'))->placeholder(cloud_storage_trans('description_placeholder')),
-            amis()->NumberControl('sort', cloud_storage_trans('sort'))->size('sm')->value(1000),
+            amis()->NumberControl('sort', cloud_storage_trans('sort'))->size('sm')->value(10),
             amis()->SwitchControl('is_default', cloud_storage_trans('is_default'))->value(1),
             amis()->SwitchControl('enabled', cloud_storage_trans('status'))->value(1),
         ])->onEvent([

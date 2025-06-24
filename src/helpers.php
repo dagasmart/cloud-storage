@@ -1,11 +1,26 @@
 <?php
 
+use DagaSmart\BizAdmin\Admin;
 use DagaSmart\CloudStorage\CloudStorageServiceProvider;
 
 if (! function_exists('cloud_storage_trans')) {
     function cloud_storage_trans($key): array|string
     {
-        return CloudStorageServiceProvider::trans('cloud-storage.'.$key);
+        $data = CloudStorageServiceProvider::trans('cloud-storage.'.$key);
+        if ($key == 'driver_select' && is_null(Admin::currentModule())) {
+            array_unshift($data, ['label' => '本地存储', 'value' => 'local']);
+        }
+        return $data;
+    }
+}
+
+if (! function_exists('storage_driver_default')) {
+    function storage_driver_default($key): string|null
+    {
+        if ($storage_driver = cloud_storage_trans($key)) {
+            return current(array_column($storage_driver,'value'));
+        }
+        return null;
     }
 }
 
