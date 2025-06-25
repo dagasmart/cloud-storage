@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -53,9 +54,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //删除 reverse
-        Schema::dropIfExists($this->table);
-        //Schema::dropIfExists('basic_cloud_cache_locks');
+        if (Schema::hasTable($this->table)) {
+            $exists = DB::table($this->table)->exists();
+            if (!$exists) {
+                //删除 reverse
+                Schema::dropIfExists($this->table);
+            }
+        }
     }
 
 };
