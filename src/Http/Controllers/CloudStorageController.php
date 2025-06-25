@@ -111,12 +111,12 @@ class CloudStorageController extends BaseController
                 amis()->TextControl('config.domain', cloud_storage_trans('domain')),
             ]),
             // 七牛云存储
-            //            amis()->Container()->hiddenOn('${driver!="kodo"}')->body([
-            //                amis()->TextControl('config.access_key', cloud_storage_trans('access_key'))->required(),
-            //                amis()->TextControl('config.secret_key', cloud_storage_trans('secret_key'))->required()->type('input-password'),
-            //                amis()->TextControl('config.bucket', cloud_storage_trans('bucket'))->desc(cloud_storage_trans('bucket_desc'))->required(),
-            //                amis()->TextControl('config.domain',  cloud_storage_trans('domain')),
-            //            ]),
+            amis()->Container()->hiddenOn('${driver!="kodo"}')->body([
+                amis()->TextControl('config.access_key', cloud_storage_trans('access_key'))->required(),
+                amis()->TextControl('config.secret_key', cloud_storage_trans('secret_key'))->required()->type('input-password'),
+                amis()->TextControl('config.bucket', cloud_storage_trans('bucket'))->desc(cloud_storage_trans('bucket_desc'))->required(),
+                amis()->TextControl('config.domain',  cloud_storage_trans('domain')),
+            ]),
             amis()->Page()->className(['m-3']),
             amis()->NumberControl('file_size', cloud_storage_trans('file_size'))
                 ->max(1000)

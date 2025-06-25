@@ -55,10 +55,14 @@ class CloudResourceService extends AdminService
     public function list(): array
     {
         $keyword = request()->keyword;
+        $storage_id = request()->storage_id;
         $isType = request()->is_type;
         $query = $this->query()
             ->when(!empty($keyword), function ($query) use ($keyword) {
                 $query->where('title', 'like', "%{$keyword}%");
+            })
+            ->when(!empty($storage_id), function ($query) use ($storage_id) {
+                $query->whereIn('storage_id', explode(',', $storage_id));
             })
             ->when(!empty($isType), function ($query) use ($isType) {
                 $query->where('is_type', $isType);

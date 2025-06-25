@@ -336,6 +336,11 @@ class CloudResourceController extends BaseController
                             ],
                             'actions' => [],
                         ])->reload('window'),
+                    amis()->CheckboxesControl('storage_id')
+                        ->set('optionType', 'button')
+                        ->inputClassName(['p-0' => true])
+                        ->className(['pl-5' => true])
+                        ->options(CloudStorageService::make()->getStorageOptions()),
                     amis()->TextControl()->name('text')->size('lg')->className('card-group-page-left-search')->labelWidth('0px')->mode('horizontal')->addOn(
                         amis()->Button()->label(cloud_storage_trans('query'))->level('primary')
                             ->icon('fas fa-search')->onEvent([
@@ -355,6 +360,7 @@ class CloudResourceController extends BaseController
                                             'data' => [
                                                 'keyword' => '${text}',
                                                 'is_type' => '${is_type}',
+                                                'storage_id' => '${storage_id}',
                                             ],
                                         ],
                                     ],
