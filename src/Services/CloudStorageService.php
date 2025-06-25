@@ -2,6 +2,7 @@
 
 namespace DagaSmart\CloudStorage\Services;
 
+use DagaSmart\BizAdmin\Admin;
 use DagaSmart\CloudStorage\Models\Base;
 use DagaSmart\CloudStorage\Models\CloudStorage;
 use Dagasmart\BizAdmin\Services\AdminService;
@@ -59,17 +60,18 @@ class CloudStorageService extends AdminService
         foreach ($data as $datum) {
             $res[] = ['label' => $datum['title'], 'value' => $datum['id']];
         }
-        //默认追加本地存储
-        $local = $this->query()
-            ->withoutGlobalScope('ActionScope')
-            ->where(['driver' => 'local'])
-            ->where(['enabled' => 1])
-            ->where(['is_default' => 1])
-            ->whereNull('module')
-            ->select(['id as value', 'title as label'])
-            ->first();
-
-        array_unshift($res, $local);
+        if (Admin::currentModule()) {
+            //默认追加本地存储
+            $local = $this->query()
+                ->withoutGlobalScope('ActionScope')
+                ->where(['driver' => 'local'])
+                ->where(['enabled' => 1])
+                ->where(['is_default' => 1])
+                ->whereNull('module')
+                ->select(['id as value', 'title as label'])
+                ->first();
+            array_unshift($res, $local);
+        }
 
         return $res;
     }

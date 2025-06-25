@@ -315,7 +315,7 @@ class CloudResourceController extends BaseController
                                     ->block()
                                     ->actionType('link')
                                     ->link('cloud_storage/storage')
-                                    ->visibleOn('${storage_id == null}'),
+                                    ->visibleOn('${!storage_id}'),
                                 amis()->FileControl('file')->labelWidth('0px')
                                     ->btnLabel(cloud_storage_trans('upload'))
                                     ->accept($this->service->getAccept())
@@ -332,7 +332,7 @@ class CloudResourceController extends BaseController
                                     ->startChunkApi($this->getUploadStartChunkPath().'/${storage_id}')
                                     ->chunkApi($this->getUploadChunkPath().'/${storage_id}')
                                     ->finishChunkApi($this->getUploadFinishChunkPath().'/${storage_id}')
-                                    ->visibleOn('${storage_id != null}'),
+                                    ->visibleOn('${!!storage_id}'),
                             ],
                             'actions' => [],
                         ])->reload('window'),
@@ -352,6 +352,7 @@ class CloudResourceController extends BaseController
                                             'data' => [
                                                 'keyword' => '${text}',
                                                 'is_type' => '${is_type}',
+                                                'storage_id' => '${storage_id}',
                                             ],
                                         ],
                                         [
@@ -408,7 +409,30 @@ class CloudResourceController extends BaseController
             ->className('min-h-screen')
             ->columns([
                 amis()->TableColumn('title', cloud_storage_trans('title')),
-                amis()->TableColumn('extension', '后缀'),
+                amis()->TableColumn('is_type', '预览')
+                    ->type('mapping')->map([
+                        'image' => amis()->Image()
+                            ->width(60)
+                            ->height(60)
+                            ->src('${url.value}')
+                            ->enlargeAble()
+                            ->enlargeWithGallary(false)
+                            ->defaultImage('/admin-assets/no-error.svg'),
+                        'document' => amis()->Icon()
+                            ->icon('far fa-question-circle')
+                            ->className(['text-warning' => true]),
+                        'video' => amis()->Video()
+                            ->src('${url.value}')
+                            ->className(['text-info' => true]),
+                        'audio' => amis()->Audio()
+                            ->src('${url.value}')
+                            ->controls(['play','process'])
+                            ->className(['text-purple-500' => true])
+                            ->style(['border' => 'none', 'zoom' => 0.7]),
+                        'other' => amis()->Icon()
+                            ->icon('far fa-question-circle')
+                            ->className(['text-purple-500' => true]),
+                    ]),
                 amis()->TableColumn('extension', '后缀'),
                 amis()->TableColumn('size', cloud_storage_trans('file_size')),
                 amis()->TableColumn('is_type', cloud_storage_trans('is_type'))->type('mapping')->map([
