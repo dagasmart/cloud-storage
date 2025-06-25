@@ -423,7 +423,8 @@ class CloudResourceController extends BaseController
                             ->className(['text-warning' => true]),
                         'video' => amis()->Video()
                             ->src('${url.value}')
-                            ->className(['text-info' => true]),
+                            ->className(['text-info' => true])
+                            ->style(['zoom' => 0.3]),
                         'audio' => amis()->Audio()
                             ->src('${url.value}')
                             ->controls(['play','process'])
