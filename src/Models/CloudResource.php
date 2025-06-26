@@ -25,6 +25,12 @@ class CloudResource extends Base
             } else {
                 $model->created_user = 0;
             }
+            if (admin_current_module()) {
+                $model->module = admin_current_module();
+            }
+            if (!is_null(admin_mer_id())) {
+                $model->mer_id = admin_mer_id();
+            }
         });
         static::deleting(function ($model) {
             if (admin_user()) {

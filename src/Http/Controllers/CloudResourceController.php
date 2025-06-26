@@ -419,7 +419,7 @@ class CloudResourceController extends BaseController
                             ->enlargeWithGallary(false)
                             ->defaultImage('/admin-assets/no-error.svg'),
                         'document' => amis()->Icon()
-                            ->icon('far fa-question-circle')
+                            ->icon('far fa-file-archive-o')
                             ->className(['text-warning' => true]),
                         'video' => amis()->Video()
                             ->src('${url.value}')
@@ -432,7 +432,7 @@ class CloudResourceController extends BaseController
                             ->style(['border' => 'none', 'zoom' => 0.7]),
                         'other' => amis()->Icon()
                             ->icon('far fa-question-circle')
-                            ->className(['text-purple-500' => true]),
+                            ->className(['text-secondary' => true]),
                     ]),
                 amis()->TableColumn('extension', '后缀'),
                 amis()->TableColumn('size', cloud_storage_trans('file_size')),
