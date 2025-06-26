@@ -64,12 +64,12 @@ class CloudStorageService extends AdminService
             //默认追加本地存储
             $local = $this->query()
                 ->withoutGlobalScope('ActionScope')
-                ->where(['driver' => 'local'])
-                ->where(['enabled' => 1])
-                ->where(['is_default' => 1])
-                ->whereNull('module')
-                ->select(['id as value', 'title as label'])
-                ->first();
+	            ->where(['driver' => Base::STORAGE_LOCAL])
+	            ->where(['enabled' => Base::ENABLE])
+	            ->whereNull('module')
+	            ->orderByDesc('is_default')
+	            ->select(['id as value', 'title as label'])
+	            ->first();
             array_unshift($res, $local);
         }
 

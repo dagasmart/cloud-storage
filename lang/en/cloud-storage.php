@@ -5,10 +5,6 @@ return [
     'driver' => 'driver',
     'driver_select' => [
         [
-            'label' => 'local storage',
-            'value' => 'local',
-        ],
-        [
             'label' => 'Alibaba Cloud OSS',
             'value' => 'oss',
         ],

@@ -70,7 +70,7 @@ class CloudStorage extends Base
                 'is_default' => $model->is_default,
             ];
 
-            return Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, $data);
+            return Cache::set(self::cache_cloud_storage_config_name(), $data);
         }
 
         return false;
@@ -78,9 +78,22 @@ class CloudStorage extends Base
 
     public function getCache()
     {
-        $data = Cache::get(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
+        $data = Cache::get(self::cache_cloud_storage_config_name());
         if (!$data) {
-            if ($row = $this->query()->where(['is_default' => self::ENABLE])->first()) {
+
+            $row = $this->query()->where(['is_default' => self::ENABLE])->first();
+
+            if (!$row) {
+                $row = $this->query()
+                    ->withoutGlobalScope('ActionScope')
+                    ->where(['driver' => self::STORAGE_LOCAL])
+                    ->where(['enabled' => self::ENABLE])
+                    ->whereNull('module')
+                    ->first();
+            }
+
+            if ($row) {
+
                 $data = [
                     'id' => $row->id,
                     'title' => $row->title,
@@ -90,15 +103,17 @@ class CloudStorage extends Base
                     'accept' => $row->accept,
                     'is_default' => $row->is_default,
                 ];
-                Cache::set(self::CACHE_CLOUD_STORAGE_CONFIG_NAME, $data);
+                Cache::set(self::cache_cloud_storage_config_name(), $data);
+
             }
         }
+
         return $data;
     }
 
     public function clearCache(): void
     {
-        Cache::forget(self::CACHE_CLOUD_STORAGE_CONFIG_NAME);
+        Cache::forget(self::cache_cloud_storage_config_name());
     }
 
 

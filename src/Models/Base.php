@@ -2,6 +2,7 @@
 
 namespace DagaSmart\CloudStorage\Models;
 
+use DagaSmart\BizAdmin\Admin;
 use DagaSmart\CloudStorage\Services\CloudUploadService;
 use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -16,8 +17,24 @@ class Base extends Model
 
     const int FORBIDDEN = 0;
 
+    const string STORAGE_LOCAL = 'local';
+
     const string CACHE_CLOUD_STORAGE_CONFIG_NAME = 'cache_cloud_storage';
 
+    public function cache_cloud_storage_config_name(): string
+    {
+        $data = self::CACHE_CLOUD_STORAGE_CONFIG_NAME;
+
+        if ($module = Admin::currentModule(true)) {
+            $data .= '_' . $module; //追加模块
+        }
+
+        if (!is_null($merId = Admin::MerId())) {
+            $data .= '_' . $merId; //追加商户
+        }
+
+        return $data;
+    }
     public function img(): Attribute
     {
         return Attribute::make(
