@@ -184,7 +184,7 @@ class CloudResourceController extends BaseController
                             ], '.cxd-Page-title' => ['font-size' => '16px'],
                         ]),
                         amis()->Divider(),
-                        amis()->Nav()->stacked(true)->defaultOpenLevel('2')->expandPosition('after')
+                        amis()->Nav()->stacked()->defaultOpenLevel('2')->expandPosition('after')
                             ->links([
                                 [
                                     'label' => cloud_storage_trans('file_type'),
@@ -327,6 +327,12 @@ class CloudResourceController extends BaseController
                                         'red' => 'data.progress > 80',
                                         'blue' => 'data.progress > 60',
                                     ])
+                                    ->stateTextMap([
+                                        'pending'   => '等待上传',
+                                        'uploading' => '上传中',
+                                        'error'     => '上传出错',
+                                        'uploaded'  => '已上传'
+                                    ])
                                     ->autoUpload(false)
                                     ->receiver($this->getUploadReceiverPath().'/${storage_id}')
                                     ->startChunkApi($this->getUploadStartChunkPath().'/${storage_id}')
@@ -336,8 +342,12 @@ class CloudResourceController extends BaseController
                             ],
                             'actions' => [],
                         ])->reload('window'),
-                    amis()->CheckboxesControl('storage_id')
-                        ->set('optionType', 'button')
+                    amis()->ButtonGroupControl('storage_id')
+                        ->multiple(false)
+                        ->clearable()
+                        ->btnLevel('light')
+                        ->btnActiveLevel('warning')
+                        //->set('optionType', 'button')
                         ->inputClassName(['p-0' => true])
                         ->className(['pl-5' => true])
                         ->options(CloudStorageService::make()->getStorageOptions()),
@@ -493,10 +503,10 @@ class CloudResourceController extends BaseController
     private function CRUDCardsPage(): CRUDCards
     {
         return amis()->CRUDCards()
+            ->id('card_list')
             ->perPage(40)
             ->affixHeader(false)
             ->filterTogglable()
-            ->id('card_list')
             ->filterDefaultVisible(1)
             ->api($this->getResourceListPath())
             ->bulkActions([$this->bulkDeleteButton()])
@@ -598,7 +608,7 @@ class CloudResourceController extends BaseController
                                             amis()->Action()->actionType('submit')->label(__('admin.delete'))->level('danger'),
                                         ])
                                         ->body([
-                                            amis()->Form()->wrapWithPanel(false)->api($this->deleteResourcePath())->body([
+                                            amis()->Form()->wrapWithPanel(false)->api($this->deleteResourcePath())->reload('card_list')->body([
                                                 amis()->Tpl()->className('py-2')->tpl(__('admin.confirm_delete')),
                                             ]),
                                         ])
