@@ -25,11 +25,11 @@ class Base extends Model
     {
         $data = self::CACHE_CLOUD_STORAGE_CONFIG_NAME;
 
-        if ($module = Admin::currentModule(true)) {
+        if ($module = admin_current_module()) {
             $data .= '_' . $module; //追加模块
         }
 
-        if (!is_null($merId = Admin::MerId())) {
+        if ($merId = admin_mer_id()) {
             $data .= '_' . $merId; //追加商户
         }
 

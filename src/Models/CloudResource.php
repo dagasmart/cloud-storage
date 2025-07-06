@@ -28,7 +28,7 @@ class CloudResource extends Base
             if (admin_current_module()) {
                 $model->module = admin_current_module();
             }
-            if (!is_null(admin_mer_id())) {
+            if (admin_mer_id()) {
                 $model->mer_id = admin_mer_id();
             }
         });
