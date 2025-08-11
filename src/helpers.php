@@ -7,7 +7,7 @@ if (! function_exists('cloud_storage_trans')) {
     function cloud_storage_trans($key): array|string
     {
         $data = CloudStorageServiceProvider::trans('cloud-storage.'.$key);
-        if ($key == 'driver_select' && is_null(Admin::currentModule())) {
+        if ($key == 'driver_select' && !admin_current_module()) {
             array_unshift($data, ['label' => '本地存储', 'value' => 'local']);
         }
         return $data;

@@ -25,6 +25,7 @@ class CloudResourceController extends BaseController
      */
     public function index(): JsonResponse|JsonResource
     {
+        //dump(admin_user()->allPermissions()->toArray());die;
         return $this->response()->success($this->page());
     }
 
