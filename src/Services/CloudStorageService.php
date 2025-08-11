@@ -115,6 +115,6 @@ class CloudStorageService extends AdminService
         }
         $total = (clone $query)->count();
 
-        return compact('items', 'total');
+        return ['items' => $items, 'total' => $total];
     }
 }
