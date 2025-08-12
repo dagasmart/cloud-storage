@@ -18,7 +18,7 @@ class CloudResourceService extends AdminService
 {
     protected string $modelName = CloudResource::class;
 
-    const array fileType = [
+    const fileType = [
         'all', 'image', 'document', 'video', 'audio', 'other',
     ];
 
