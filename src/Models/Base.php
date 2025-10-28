@@ -21,6 +21,19 @@ class Base extends Model
 
     const string CACHE_CLOUD_STORAGE_CONFIG_NAME = 'cache_cloud_storage';
 
+    protected function localDriver(): array
+    {
+        return [
+            'id' => 1,
+            'title' => '本地存储',
+            'driver' => 'local',
+            'config' => ['root' => 'uploads', 'domain' => env('APP_URL')],
+            'file_size' => 10,
+            'enabled' => 1,
+            'is_default' => 1,
+        ];
+    }
+
     public function cache_cloud_storage_config_name(): string
     {
         $data = self::CACHE_CLOUD_STORAGE_CONFIG_NAME;

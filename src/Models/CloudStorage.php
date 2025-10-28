@@ -57,6 +57,12 @@ class CloudStorage extends Base
         });
     }
 
+    public function localStorage(): array
+    {
+        $local = parent::localDriver();
+        return ['value' => $local['id'], 'label' => $local['title']];
+    }
+
     public function setCache($model): bool
     {
         if ($model->is_default == Base::ENABLE) {
@@ -80,20 +86,13 @@ class CloudStorage extends Base
     {
         $data = Cache::get(self::cache_cloud_storage_config_name());
         if (!$data) {
-
-            $row = $this->query()->where(['is_default' => self::ENABLE])->first();
-
-            if (!$row) {
-                $row = $this->query()
-                    ->withoutGlobalScope('ActionScope')
-                    ->where(['driver' => self::STORAGE_LOCAL])
-                    ->where(['enabled' => self::ENABLE])
-                    ->whereNull('module')
-                    ->first();
-            }
-
+            $row = $this->query()
+                ->withoutGlobalScope('ActiveScope')
+                ->where(['driver' => self::STORAGE_LOCAL])
+                ->where(['enabled' => self::ENABLE])
+                ->where(['is_default' => self::ENABLE])
+                ->first();
             if ($row) {
-
                 $data = [
                     'id' => $row->id,
                     'title' => $row->title,
@@ -103,11 +102,11 @@ class CloudStorage extends Base
                     'accept' => $row->accept,
                     'is_default' => $row->is_default,
                 ];
-                Cache::set(self::cache_cloud_storage_config_name(), $data);
-
+            } else {
+                $data = $this->localDriver(); //本地驱动
             }
+            Cache::set(self::cache_cloud_storage_config_name(), $data);
         }
-
         return $data;
     }
 

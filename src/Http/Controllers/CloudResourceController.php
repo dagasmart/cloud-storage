@@ -25,7 +25,6 @@ class CloudResourceController extends BaseController
      */
     public function index(): JsonResponse|JsonResource
     {
-        //dump(admin_user()->allPermissions()->toArray());die;
         return $this->response()->success($this->page());
     }
 
@@ -177,7 +176,7 @@ class CloudResourceController extends BaseController
     {
         return amis()->Page()->body(
             amis()->Flex()->items([
-                amis()->Page()->css($this->pageCss('page'))->className('w-1/5 mr-5')->body([
+                amis()->Page()->css($this->pageCss())->className('w-1/5 mr-5')->body([
                     amis()->Card()->body([
                         amis()->Page()->title(cloud_storage_trans('resource_manage'))->css([
                             '.cxd-Page-header' => [
@@ -278,7 +277,7 @@ class CloudResourceController extends BaseController
      */
     public function view(): Page
     {
-        return amis()->Page()->className('shadow-md rounded-md max-h-full')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
+        return amis()->Page()->className('shadow-md rounded-md max-h-full overflow-auto')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
             amis()->Flex()->className('bg-white')->items([
                 amis()->Page()->id('tabs-list')->className('card-group-page-left w-12')->body([
                     amis()->VanillaAction()->visibleOn('${showType == "grid"}')->icon('fa fa-list')->tooltip(cloud_storage_trans('list'))->tooltipPlacement('top')->onEvent(['click' => ['actions' => [
@@ -351,7 +350,7 @@ class CloudResourceController extends BaseController
                         //->set('optionType', 'button')
                         ->inputClassName(['p-0' => true])
                         ->className(['pl-5' => true])
-                        ->options(CloudStorageService::make()->getStorageOptions()),
+                        ->options((new CloudStorageService)->getStorageOptions()),
                     amis()->TextControl()->name('text')->size('lg')->className('card-group-page-left-search')->labelWidth('0px')->mode('horizontal')->addOn(
                         amis()->Button()->label(cloud_storage_trans('query'))->level('primary')
                             ->icon('fas fa-search')->onEvent([
@@ -560,7 +559,7 @@ class CloudResourceController extends BaseController
                             amis()->Page()->className('flex-auto card-list-text ml-2 text-xs w-1/4 pr-2')->body('${title}'),
                             amis()->DropdownButton()->className('card-link mr-1')->level('link')->icon('fa fa-ellipsis-h')->hideCaret('1')->buttons([
                                 amis()->VanillaAction()->label(cloud_storage_trans('rename'))->actionType('dialog')->dialog(['title' => cloud_storage_trans('rename'), 'body' => amis()->Page()->body(
-                                    amis()->TextareaControl('title', cloud_storage_trans('title'))->required(),
+                                    amis()->TextControl('title', cloud_storage_trans('title'))->required(),
                                 ), 'actions' => [
                                     [
                                         'type' => 'button',

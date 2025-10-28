@@ -55,21 +55,10 @@ class CloudStorageService extends AdminService
 
     public function getStorageOptions(): array
     {
-        $data = $this->query()->where(['enabled' => 1])->get(['id', 'title'])->toArray();
-        $res = [];
-        foreach ($data as $datum) {
-            $res[] = ['label' => $datum['title'], 'value' => $datum['id']];
-        }
-        if (Admin::currentModule()) {
+        $res = $this->query()->where(['enabled' => 1])->get(['id as value', 'title as label'])->toArray();
+        if (admin_current_module()) {
             //默认追加本地存储
-            $local = $this->query()
-                ->withoutGlobalScope('ActionScope')
-	            ->where(['driver' => Base::STORAGE_LOCAL])
-	            ->where(['enabled' => Base::ENABLE])
-	            ->whereNull('module')
-	            ->orderByDesc('is_default')
-	            ->select(['id as value', 'title as label'])
-	            ->first();
+            $local = $this->getModel()->localStorage();
             array_unshift($res, $local);
         }
 
