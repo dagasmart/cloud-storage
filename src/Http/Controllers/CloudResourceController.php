@@ -235,6 +235,7 @@ class CloudResourceController extends BaseController
                 'top' => 0,
                 'bottom' => 0,
             ],
+            'backgroundColor' => 'transparent',
             'tooltip' => ['show' => true, 'formatter' => 'function (params) {console.log(params.data);return `总计：${params.data.value}<br>${params.data.name}:${params.data.size}`}'],
             'legend' => [
                 'show' => true,
@@ -265,7 +266,7 @@ class CloudResourceController extends BaseController
                     'labelLine' => [
                         'show' => false,
                     ],
-                    'itemStyle' => ['borderRadius' => 2, 'borderColor' => '#fff', 'borderWidth' => 2],
+                    'itemStyle' => ['borderRadius' => 5, 'borderColor' => 'transparent', 'borderWidth' => 5],
                     'data' => $this->service->getReport(),
                 ],
             ],
@@ -277,8 +278,8 @@ class CloudResourceController extends BaseController
      */
     public function view(): Page
     {
-        return amis()->Page()->className('shadow-md rounded-md max-h-full overflow-auto')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
-            amis()->Flex()->className('bg-white')->items([
+        return amis()->Page()->className('cxd-Crud shadow-md rounded-md max-h-full overflow-auto')->data(['showType' => 'grid', 'defaultKey' => '1'])->css($this->pageCss('view'))->body([
+            amis()->Flex()->items([
                 amis()->Page()->id('tabs-list')->className('card-group-page-left w-12')->body([
                     amis()->VanillaAction()->visibleOn('${showType == "grid"}')->icon('fa fa-list')->tooltip(cloud_storage_trans('list'))->tooltipPlacement('top')->onEvent(['click' => ['actions' => [
                         [
