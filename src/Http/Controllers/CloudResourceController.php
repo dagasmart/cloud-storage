@@ -621,7 +621,7 @@ class CloudResourceController extends BaseController
             );
     }
 
-    public function getList(): JsonResponse|JsonResource
+    public function get_list(): JsonResponse|JsonResource
     {
         return $this->response()->success($this->service->list());
     }
