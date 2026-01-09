@@ -12,7 +12,7 @@ class CloudStorageServiceProvider extends ServiceProvider
     protected $menu = [
         [
             'title' => '云存储管理',
-            'url' => '/cloud_storage/resource',
+            'url' => '/cloud_storage/resource/index',
             'url_type' => '1',
             'icon' => 'tdesign:object-storage',
         ],

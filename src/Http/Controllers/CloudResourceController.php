@@ -428,7 +428,7 @@ class CloudResourceController extends BaseController
                             ->src('${url.value}')
                             ->enlargeAble()
                             ->enlargeWithGallary(false)
-                            ->defaultImage('/admin-assets/no-error.svg'),
+                            ->defaultImage(url(admin_config('admin.default_image'))),
                         'document' => amis()->Icon()
                             ->icon('far fa-file-archive-o')
                             ->className(['text-warning' => true]),
