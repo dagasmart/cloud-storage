@@ -11,25 +11,25 @@ Route::group([
     'prefix' => 'cloud_storage',
     'middleware' => [],
 ], function (Router $router) {
-    // 获取数据列表
+    // 获取列表
     Route::get('resource/get_list', [Controllers\CloudResourceController::class, 'get_list']);
+
+    // 下载
+    Route::get('resource/download/{id}', [Controllers\CloudResourceController::class, 'download']);
+    // 简单上传
+    Route::post('upload/receiver/{id}', [Controllers\CloudUploadController::class, 'receiver']);
+    // 切片上传
+    // 开始上传文件的准备
+    Route::post('upload/startChunk/{id}', [Controllers\CloudUploadController::class, 'startChunk']);
+    // 分段上传文件
+    Route::post('upload/chunk/{id}', [Controllers\CloudUploadController::class, 'chunk']);
+    // 完成分片上传
+    Route::post('upload/finishChunk/{id}', [Controllers\CloudUploadController::class, 'finishChunk']);
+
     // 存储设置
     $router->resource('storage', Controllers\CloudStorageController::class);
     // 资源管理
     $router->resource('resource', Controllers\CloudResourceController::class);
-
-
-//    // 下载
-//    Route::get('cloud_storage/resource/download/{id}', [Controllers\CloudResourceController::class, 'download']);
-//    // 简单上传
-//    Route::post('cloud_storage/upload/receiver/{id}', [Controllers\CloudUploadController::class, 'receiver']);
-//    // 切片上传
-//    // 开始上传文件的准备
-//    Route::post('cloud_storage/upload/startChunk/{id}', [Controllers\CloudUploadController::class, 'startChunk']);
-//    // 分段上传文件
-//    Route::post('cloud_storage/upload/chunk/{id}', [Controllers\CloudUploadController::class, 'chunk']);
-//    // 完成分片上传
-//    Route::post('cloud_storage/upload/finishChunk/{id}', [Controllers\CloudUploadController::class, 'finishChunk']);
 });
 
 //需登录与鉴权
