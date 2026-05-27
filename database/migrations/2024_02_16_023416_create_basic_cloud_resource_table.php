@@ -1,10 +1,9 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
-
 
 return new class extends Migration
 {
@@ -17,12 +16,12 @@ return new class extends Migration
     public function up(): void
     {
         if (Schema::hasTable($this->table)) {
-            //备份表
-            //Schema::rename($this->table, 'backup_' . $this->table . '_' .date('YmdHis'));
-            //删除表
-            //Schema::dropIfExists($this->table);
+            // 备份表
+            // Schema::rename($this->table, 'backup_' . $this->table . '_' .date('YmdHis'));
+            // 删除表
+            // Schema::dropIfExists($this->table);
         } else {
-            //创建表
+            // 创建表
             Schema::create($this->table, function (Blueprint $table) {
                 $table->comment('云资源表');
                 $table->ulid('id')->primary();
@@ -53,11 +52,10 @@ return new class extends Migration
     {
         if (Schema::hasTable($this->table)) {
             $exists = DB::table($this->table)->exists();
-            if (!$exists) {
-                //删除 reverse
+            if (! $exists) {
+                // 删除 reverse
                 Schema::dropIfExists($this->table);
             }
         }
     }
-
 };
