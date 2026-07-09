@@ -49,6 +49,7 @@ class Client
         try {
             $token = $this->kodoClient->uploadToken($this->config['bucket']);
             $uploadMgr = new UploadManager;
+            $partSize = 10;
             [$ret, $err] = $uploadMgr->putFile($token, $object, null,
                 null, 'application/octet-stream', false,
                 null, 'v2', $partSize);
